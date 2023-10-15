@@ -15,22 +15,14 @@ public class jpaMain {
         tx.begin();
 
         try {
-            //비영속
-            Member member = new Member();
-            member.setId(101L);
-            member.setName("HelloJPA");
-            em.persist(member);
-
             //영속
-            System.out.println("====== Before ======");
-            em.persist(member); //이때 insert되지 않는다.
-            System.out.println("====== After ======");
+            Member findMember1 = em.find(Member.class, 101L);
+            Member findMember2 = em.find(Member.class, 101L);
 
-            Member findMember = em.find(Member.class, 101L); //DB에서 조회하지 않고 1차캐시에서 조회
-            System.out.println("findMember.id = "+ findMember.getId());
-            System.out.println("findMember.name = "+ findMember.getName());
-
-            tx.commit(); //이때 실제 insert
+            //1차 캐시로 반복 가능한 읽기 등급의 트랜잭션 격리 수준을 데이터베이스가 아닌 애플리케이션 차원에서 제공
+            //같은 트랜잭션 안에서 같은 값을 조회시 동일성 보장
+            System.out.println(findMember1 == findMember2);
+            tx.commit();
         } catch (Exception e) {
             tx.rollback();
         } finally {
