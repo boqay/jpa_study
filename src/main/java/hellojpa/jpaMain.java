@@ -16,14 +16,15 @@ public class jpaMain {
 
         try {
             //영속
-            Member findMember1 = em.find(Member.class, 101L);
-            Member findMember2 = em.find(Member.class, 101L);
+            Member member = em.find(Member.class, 150L);
+            member.setName("jpaname");
+            //jpa는 sql개념이 아닌 객체를 사용하기 때문에 CRUD를 해서 반영하는 개념이 아니다.
+//            em.persist();
+            System.out.println("======================");
 
-            //1차 캐시로 반복 가능한 읽기 등급의 트랜잭션 격리 수준을 데이터베이스가 아닌 애플리케이션 차원에서 제공
-            //같은 트랜잭션 안에서 같은 값을 조회시 동일성 보장
-            System.out.println(findMember1 == findMember2);
+            //스냅샷과 Entity를 비교해서 다르면 sql을 쓰기지연 sql저장소로 보낸다.
             tx.commit();
-        } catch (Exception e) {
+         } catch (Exception e) {
             tx.rollback();
         } finally {
             em.close();
